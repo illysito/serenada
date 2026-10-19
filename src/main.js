@@ -1,8 +1,5 @@
-import animateTitle from './features/animateTitle'
-import createBadge from './features/createBasge'
-import './styles/style.css'
+import worldHomeAdan from './features/world/adanMoreno/world'
 
-console.log('Welcome to Vite + JS + Webflow!')
+console.log('Serenada 26')
 
-createBadge()
-animateTitle()
+worldHomeAdan()
