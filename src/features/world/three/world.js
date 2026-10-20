@@ -242,11 +242,11 @@ async function world() {
   animate()
 
   const heroSection = document.querySelector('.hero__section')
-  function initDistortion() {
+  function initDistortion(delay) {
     gsap.to(UNIFORMS.u_distFactor, {
       value: 0.11,
       duration: 2.4,
-      delay: 0.1,
+      delay: delay,
       ease: 'expo.out',
     })
     gsap.to(UNIFORMS.u_scroll, {
@@ -270,7 +270,10 @@ async function world() {
       },
     })
   }
-  initDistortion()
+  window.addEventListener('preloaderIsReady', (e) => {
+    const delay = e.detail.delay
+    initDistortion(delay)
+  })
 
   //#endregion
 

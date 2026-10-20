@@ -15,7 +15,7 @@ function hero() {
       scrollTrigger: {
         trigger: metaLines[0],
         start: 'top 80%',
-        end: 'top 40%',
+        end: 'top 52%',
         scrub: 1.5,
         // markers: true,
       },

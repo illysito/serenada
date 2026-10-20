@@ -2,14 +2,18 @@ import artists from './features/motion/artists'
 import hero from './features/motion/hero'
 import info from './features/motion/info'
 import lineup from './features/motion/lineup'
+import nav from './features/motion/nav'
+import preloader from './features/motion/preloader'
 import tags from './features/motion/tags'
 import world from './features/world/three/world'
 
 console.log('Serenada 26')
 
 world()
+nav()
 hero()
 tags()
 lineup()
 artists()
 info()
+preloader()

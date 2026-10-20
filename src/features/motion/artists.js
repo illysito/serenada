@@ -101,6 +101,21 @@ function artists() {
   })
 
   artistImages.forEach((img) => {
+    const wrapper = img.parentElement
+    wrapper.addEventListener('mouseenter', () => {
+      gsap.to(wrapper, {
+        borderRadius: 8,
+        duration: 0.4,
+        ease: 'power2.inOut',
+      })
+    })
+    wrapper.addEventListener('mouseleave', () => {
+      gsap.to(wrapper, {
+        borderRadius: 0,
+        duration: 0.4,
+        ease: 'power2.inOut',
+      })
+    })
     gsap.to(img, {
       opacity: 1,
       duration: 1.2,
