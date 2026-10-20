@@ -1,4 +1,4 @@
-const woodFragment = `
+const typeFragment = `
 #ifdef GL_ES
 precision highp float;
 #endif
@@ -6,6 +6,8 @@ precision highp float;
 uniform float u_time;
 uniform float u_seed;
 uniform float u_distFactor; 
+uniform float u_scroll; 
+uniform float u_scrollDistortion;
 
 uniform float u_mouseX;
 uniform float u_mouseY;
@@ -21,6 +23,21 @@ varying vec3 vPosition;
 varying vec3 vColor;
 
 float PI = 3.14159265358979323846;
+
+vec2 aspect(vec2 uv, float image_ratio, float canvas_ratio){
+  // if canvas is taller than image, stretch downwards
+  // if canvas is landscape to the image, stretch across
+  if(image_ratio >= canvas_ratio){
+    float ratio = canvas_ratio / image_ratio;
+    uv.x *= ratio;
+    uv.x += (1.0 - ratio) / 2.0; 
+  } else {
+    float ratio = image_ratio / canvas_ratio;
+    uv.y *= ratio;
+    uv.y += (1.0 - ratio) / 2.0; 
+  }
+  return uv;
+}
 
 float rand2(vec2 n) { 
 	return fract(sin(dot(n, vec2(12.9898, 4.1414))) * 43758.5453);
@@ -137,6 +154,15 @@ void main()
 {
   vec2 uv = v_texcoord;
 
+  float canvas_ratio = u_resolution.x / u_resolution.y;
+  float image_ratio = 1440.0 / 780.0;
+
+  uv = aspect(
+    uv,
+    image_ratio,
+    canvas_ratio
+  );
+
   float random = hash12(0.5 * gl_FragCoord.xy + u_time);
   vec4 perlin = texture2D(u_perlin, vec2(uv.x, uv.y));
   float t = u_time;
@@ -147,7 +173,7 @@ void main()
 
   float noise = texture2D(
       u_perlin,
-      uv * vec2(1.0, 2.0) + vec2(0.0, t * 0.01)
+      uv * vec2(1.0, 2.0) + vec2(0.01 * t, t * 0.02)
   ).r;
   
   float swell =
@@ -166,14 +192,15 @@ void main()
 
 
   vec2 distortionUV = vec2(uv.x, 0.996 * uv.y) + vec2(
-      1.2 * distortion,
-      0.001 * sin(uv.x * 25.0 + t * 0.4) - distortion
+      1.2 * distortion * u_scrollDistortion - initDistortion,
+      0.001 * sign(sin(uv.x * 25.0 + t * 0.4)) *
+      pow(abs(sin(uv.x * 25.0 + t * 0.8)), 4.0) - distortion - initDistortion
   );
 
   vec2 initDistortionUV = vec2(uv.x, 0.996 * uv.y) + vec2(
-    1.2 * initDistortion,
-    0.001 * sin(uv.x * 25.0 + t * 0.4) - initDistortion
-);
+    1.2 * initDistortion * u_scrollDistortion,
+    0.001 * sin(uv.x * 25.0 + t * 0.4) * u_scrollDistortion - initDistortion
+  );
 
 
   ///
@@ -182,13 +209,18 @@ void main()
   vec4 mainTexture = texture2D(u_wood, initDistortionUV);
   vec4 reflectionTexture = texture2D(u_reflection, distortionUV);
 
-  vec3 finalColor = mix(
-    mainTexture.rgb,
-    reflectionTexture.rgb,
-    0.6 * reflectionTexture.a * noise
-  );
+  float reflectionAlpha = reflectionTexture.a * 0.4 * noise;
 
-  gl_FragColor = vec4(finalColor, 1.) + 0.12 * random;
+  float finalAlpha = u_scroll * (reflectionAlpha
+      + mainTexture.a * (1.0 - reflectionAlpha));
+  
+  vec3 finalRGB = (
+      reflectionTexture.rgb * reflectionAlpha
+      + mainTexture.rgb * mainTexture.a * (1.0 - reflectionAlpha)
+  ) / max(finalAlpha, 0.00001);
+  
+
+  gl_FragColor = vec4(finalRGB, finalAlpha);
 }
 `
-export default woodFragment
+export default typeFragment

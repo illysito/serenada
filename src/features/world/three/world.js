@@ -5,28 +5,33 @@ import * as THREE from 'three'
 gsap.registerPlugin(ScrollTrigger)
 
 // Shaders
-import frag from './shaders/gradient_fragShader'
-import vert from './shaders/gradient_vertexShader'
+import frag_bg from '../shaders/bg_frag'
+import frag from '../shaders/type_frag'
+import vert from '../shaders/vertexShader'
 // import vert_2 from './shaders/gradient_vertexShader_2'
-// import frag from './shaders/wood_fragShader'
 
 const UNIFORMS = {
-  u_cycleSpeed: { value: 0.4 },
-  u_cycleTime: { value: 0.8 },
-  u_powerFactor: { value: 4.0 },
-  u_blueFactor: { value: 0.4235 },
+  u_distFactor: { value: 6 },
+  u_scroll: { value: 1 },
+  u_scrollDistortion: { value: 1 },
 }
 
 function isMobile() {
   return window.matchMedia('(max-width: 667px)').matches
 }
 
-async function worldHome() {
+function githubToJsDelivr(permalink) {
+  return permalink
+    .replace('github.com', 'cdn.jsdelivr.net/gh')
+    .replace('/blob/', '@')
+}
+
+async function world() {
   //#region SETUP
 
   // -------------------------------------------------------------- Setup --------------------------------------------------------------
 
-  const canvas = document.getElementById('canvas')
+  const canvas = document.getElementById('three-canvas')
 
   // Scene
   const scene = new THREE.Scene()
@@ -73,8 +78,26 @@ async function worldHome() {
   //#region TEXTURE
   const textureLoader = new THREE.TextureLoader()
 
+  const backgroundTexture = textureLoader.load(
+    githubToJsDelivr(
+      'https://github.com/illysito/serenada/blob/a82f1f6605618f967a0fcf2942f8ade14449d68e/textures/Serenada_BG.jpg'
+    )
+  )
+
   const woodTexture = textureLoader.load(
-    'https://cdn.jsdelivr.net/gh/illysito/amorenelaire@3edaf63110d35612c3414658efee33dec37b9eef/textures/woodTexture.png'
+    githubToJsDelivr(
+      'https://github.com/illysito/serenada/blob/a82f1f6605618f967a0fcf2942f8ade14449d68e/textures/Serenada%20Main%20-%20little%20-%204.png'
+    )
+  )
+  // const reflectionTexture = textureLoader.load(
+  //   githubToJsDelivr(
+  //     'https://github.com/illysito/serenada/blob/9731d7b2b3e2a32f7d19c3c233565d83e669040b/textures/Serenada%20Reflection%20-%20little.png'
+  //   )
+  // )
+  const reflectionTexture = textureLoader.load(
+    githubToJsDelivr(
+      'https://github.com/illysito/serenada/blob/1886790a9bb4a7814a2f6be6c27f8464608056ad/textures/Serenada%20Reflection%20-%20little%20-%202.png'
+    )
   )
 
   const perlinTexture = textureLoader.load(
@@ -108,12 +131,26 @@ async function worldHome() {
 
   const planeGeometry = new THREE.PlaneGeometry(
     canvas.clientWidth,
-    canvas.clientWidth,
+    canvas.clientHeight,
     horizontalSegments,
     verticalSegments
   )
   const seed = Math.random() * 20
   // console.log('Seed: ', seed)
+  const backgroundPlaneMaterial = new THREE.ShaderMaterial({
+    // fragmentShader: woodFrag,
+    fragmentShader: frag_bg,
+    vertexShader: vert,
+    uniforms: {
+      u_time: { value: 0 },
+      u_bg: { value: backgroundTexture },
+      u_resolution: {
+        value: new THREE.Vector2(canvas.clientWidth, canvas.clientHeight),
+      },
+    },
+    transparent: true,
+    depthWrite: false,
+  })
   const planeMaterial = new THREE.ShaderMaterial({
     // fragmentShader: woodFrag,
     fragmentShader: frag,
@@ -123,25 +160,29 @@ async function worldHome() {
       u_seed: { value: seed },
       u_mouseX: { value: 0.0 },
       u_mouseY: { value: 0.0 },
-      u_cycleTime: { value: UNIFORMS.u_cycleTime.value },
-      u_cycleSpeed: { value: UNIFORMS.u_cycleSpeed.value },
-      u_powerFactor: { value: UNIFORMS.u_powerFactor.value },
-      u_blueFactor: { value: UNIFORMS.u_blueFactor.value },
+      u_distFactor: { value: UNIFORMS.u_distFactor.value },
       u_wood: { value: woodTexture },
+      u_reflection: { value: reflectionTexture },
       u_perlin: { value: perlinTexture },
+      u_scroll: { value: UNIFORMS.u_scroll.value },
+      u_scrollDistortion: { value: UNIFORMS.u_scrollDistortion.value },
       u_resolution: {
         value: new THREE.Vector2(canvas.clientWidth, canvas.clientHeight),
       },
     },
+    transparent: true,
+    depthWrite: false,
   })
+  const backgroundPlane = new THREE.Mesh(planeGeometry, backgroundPlaneMaterial)
   const plane = new THREE.Mesh(planeGeometry, planeMaterial)
   let planeScale = 1
   if (isMobile()) {
     planeScale = 1.8
   }
   // plane.rotation.x = 0.1
-  plane.rotation.z = Math.PI / 2
-  plane.position.z = 200
+  // plane.rotation.z = Math.PI / 2
+  backgroundPlane.position.z = -0.1
+  plane.position.z = 0
   plane.scale.set(planeScale, planeScale, planeScale)
 
   // Avoid the plane from going OVER the SPHERE
@@ -149,6 +190,7 @@ async function worldHome() {
   plane.material.depthWrite = false
   plane.material.depthTest = true
 
+  scene.add(backgroundPlane)
   scene.add(plane)
 
   //#endregion
@@ -178,14 +220,15 @@ async function worldHome() {
     // Background plane
     planeCounter = (planeCounter + 0.002) % 5000 // safeguard to not let counter evolve endlessly
     planeMaterial.uniforms.u_time.value = planeCounter
-    planeMaterial.uniforms.u_cycleSpeed.value = UNIFORMS.u_cycleSpeed.value
-    planeMaterial.uniforms.u_cycleTime.value = UNIFORMS.u_cycleTime.value
-    planeMaterial.uniforms.u_powerFactor.value = UNIFORMS.u_powerFactor.value
-    planeMaterial.uniforms.u_blueFactor.value = UNIFORMS.u_blueFactor.value
-    planeMaterial.uniforms.u_mouseX.value = currentX
-    planeMaterial.uniforms.u_mouseY.value = currentY
+    backgroundPlaneMaterial.uniforms.u_time.value = planeCounter
+    planeMaterial.uniforms.u_distFactor.value = UNIFORMS.u_distFactor.value
+    planeMaterial.uniforms.u_scroll.value = UNIFORMS.u_scroll.value
+    planeMaterial.uniforms.u_scrollDistortion.value =
+      UNIFORMS.u_scrollDistortion.value
+    // planeMaterial.uniforms.u_mouseX.value = currentX
+    // planeMaterial.uniforms.u_mouseY.value = currentY
 
-    console.log(currentX, currentY)
+    // console.log(currentX, currentY)
     // if (!isMobile()) {
     //   plane.rotation.z = Math.PI * Math.cos(0.25 * planeCounter)
     // }
@@ -195,6 +238,37 @@ async function worldHome() {
     requestAnimationFrame(animate)
   }
   animate()
+
+  const heroSection = document.querySelector('.hero__section')
+  function initDistortion() {
+    gsap.to(UNIFORMS.u_distFactor, {
+      value: 0.11,
+      duration: 2.4,
+      delay: 0.1,
+      ease: 'expo.out',
+    })
+    gsap.to(UNIFORMS.u_scroll, {
+      value: 0,
+      scrollTrigger: {
+        trigger: heroSection,
+        start: 'bottom 100%',
+        end: 'bottom 32%',
+        scrub: 0.5,
+        // markers: true,
+      },
+    })
+    gsap.to(UNIFORMS.u_scrollDistortion, {
+      value: 4,
+      scrollTrigger: {
+        trigger: heroSection,
+        start: 'bottom 100%',
+        end: 'bottom 20%',
+        scrub: 1.2,
+        // markers: true,
+      },
+    })
+  }
+  initDistortion()
 
   //#endregion
 
@@ -223,4 +297,4 @@ async function worldHome() {
   })
 }
 
-export default worldHome
+export default world
