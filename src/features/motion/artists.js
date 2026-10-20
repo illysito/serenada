@@ -47,6 +47,9 @@ function artists() {
     opacity: 0,
     yPercent: 100,
   })
+  gsap.set(artistImages, {
+    opacity: 0,
+  })
 
   // move things on scroll
   artistNames.forEach((t) => {
@@ -99,11 +102,23 @@ function artists() {
 
   artistImages.forEach((img) => {
     gsap.to(img, {
-      y: 20,
+      opacity: 1,
+      duration: 1.2,
+      scrollTrigger: {
+        trigger: img,
+        start: 'top 100%',
+        // end: 'top 0%',
+        // markers: true,
+        // scrub: true,
+      },
+    })
+    gsap.to(img, {
+      y: -32,
       scrollTrigger: {
         trigger: img,
         start: 'top 100%',
         end: 'top 0%',
+        scrub: true,
       },
     })
   })

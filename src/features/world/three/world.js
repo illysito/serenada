@@ -199,6 +199,8 @@ async function world() {
 
   // -------------------------------------------------------------- Loop --------------------------------------------------------------
 
+  const mouse = document.querySelector('.mouse')
+  console.log(mouse)
   // normal counter
   let planeCounter = 0
 
@@ -208,7 +210,7 @@ async function world() {
   let currentX = 0
   let currentY = 0
 
-  let lerpFactor = 0.002
+  let lerpFactor = 0.06
 
   function lerp(start, end, t) {
     return start + (end - start) * t
@@ -227,7 +229,7 @@ async function world() {
       UNIFORMS.u_scrollDistortion.value
     // planeMaterial.uniforms.u_mouseX.value = currentX
     // planeMaterial.uniforms.u_mouseY.value = currentY
-
+    // mouse.style.transform = `translate(${currentX - 12}px, ${currentY - 12}px)`
     // console.log(currentX, currentY)
     // if (!isMobile()) {
     //   plane.rotation.z = Math.PI * Math.cos(0.25 * planeCounter)
@@ -292,8 +294,8 @@ async function world() {
   //#endregion
 
   window.addEventListener('mousemove', (e) => {
-    targetX = e.clientX / window.innerWidth
-    targetY = 1.0 - e.clientY / window.innerHeight
+    targetX = e.clientX
+    targetY = e.clientY + window.scrollY
   })
 }
 
