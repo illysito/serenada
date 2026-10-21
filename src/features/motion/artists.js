@@ -108,12 +108,22 @@ function artists() {
         duration: 0.4,
         ease: 'power2.inOut',
       })
+      gsap.to(img, {
+        scale: 1.02,
+        duration: 0.8,
+        // ease: 'power2.inOut',
+      })
     })
     wrapper.addEventListener('mouseleave', () => {
       gsap.to(wrapper, {
         borderRadius: 0,
         duration: 0.4,
         ease: 'power2.inOut',
+      })
+      gsap.to(img, {
+        scale: 1,
+        duration: 0.8,
+        // ease: 'power2.inOut',
       })
     })
     gsap.to(img, {
