@@ -7,6 +7,7 @@ function lineup() {
   const dayTitles = [...document.querySelectorAll('.day-title')]
   const showTitles = [...document.querySelectorAll('.show-title')]
   const showInfos = [...document.querySelectorAll('.show-info')]
+  const dayShowWrappers = [...document.querySelectorAll('.day-show-wrapper')]
 
   const texts = [...dayTitles, ...showTitles, ...showInfos]
 
@@ -66,6 +67,36 @@ function lineup() {
         // scrub: 1.5,
         // markers: true,
       },
+    })
+  })
+
+  const duration = 0.8
+  dayShowWrappers.forEach((w) => {
+    const texts = w.querySelectorAll('h4')
+    const overlay = w.lastElementChild
+    w.addEventListener('mouseenter', () => {
+      gsap.to(overlay, {
+        yPercent: 100,
+        duration: duration,
+        ease: 'power2.out',
+      })
+      gsap.to(texts, {
+        color: '#548945',
+        duration: duration,
+        ease: 'power2.out',
+      })
+    })
+    w.addEventListener('mouseleave', () => {
+      gsap.to(overlay, {
+        yPercent: 0,
+        duration: duration,
+        ease: 'power2.out',
+      })
+      gsap.to(texts, {
+        color: '#f4ff64',
+        duration: duration,
+        ease: 'power2.out',
+      })
     })
   })
 }

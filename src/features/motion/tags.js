@@ -33,7 +33,7 @@ function tags() {
 
   tags.forEach((line) => {
     gsap.to(line, {
-      opacity: 1,
+      opacity: 0.72,
       yPercent: 0,
       duration: 1.4,
       ease: 'power3.inOut',

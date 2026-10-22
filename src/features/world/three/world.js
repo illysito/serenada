@@ -11,9 +11,9 @@ import vert from '../shaders/vertexShader'
 // import vert_2 from './shaders/gradient_vertexShader_2'
 
 const UNIFORMS = {
-  u_distFactor: { value: 6 },
+  u_distFactor: { value: 2 },
   u_scroll: { value: 1 },
-  u_scrollDistortion: { value: 1 },
+  u_scrollDistortion: { value: 0 },
 }
 
 function isMobile() {
@@ -32,6 +32,7 @@ async function world() {
   // -------------------------------------------------------------- Setup --------------------------------------------------------------
 
   const canvas = document.getElementById('three-canvas')
+  const heroImgContainer = document.querySelector('.hero-img-container')
 
   // Scene
   const scene = new THREE.Scene()
@@ -80,15 +81,22 @@ async function world() {
 
   const backgroundTexture = textureLoader.load(
     githubToJsDelivr(
-      'https://github.com/illysito/serenada/blob/a82f1f6605618f967a0fcf2942f8ade14449d68e/textures/Serenada_BG.jpg'
+      'https://github.com/illysito/serenada/blob/862837ae6c9f6aecce5b17c8c132629272c82c60/textures/Serenada_BG_green.png'
     )
   )
 
   const woodTexture = textureLoader.load(
     githubToJsDelivr(
-      'https://github.com/illysito/serenada/blob/a82f1f6605618f967a0fcf2942f8ade14449d68e/textures/Serenada%20Main%20-%20little%20-%204.png'
+      'https://github.com/illysito/serenada/blob/b8906e0509b5649516cc3655561aa8b940f21566/textures/DePedroGLSL-3.png'
     )
   )
+
+  // const woodTexture = textureLoader.load(
+  //   githubToJsDelivr(
+  //     'https://github.com/illysito/serenada/blob/b747d2ff12f90d6583b1f547cfdbcb583dd538d4/textures/ElsaMorenoGLSL.png'
+  //   )
+  // )
+
   // const reflectionTexture = textureLoader.load(
   //   githubToJsDelivr(
   //     'https://github.com/illysito/serenada/blob/9731d7b2b3e2a32f7d19c3c233565d83e669040b/textures/Serenada%20Reflection%20-%20little.png'
@@ -96,7 +104,7 @@ async function world() {
   // )
   const reflectionTexture = textureLoader.load(
     githubToJsDelivr(
-      'https://github.com/illysito/serenada/blob/1886790a9bb4a7814a2f6be6c27f8464608056ad/textures/Serenada%20Reflection%20-%20little%20-%202.png'
+      'https://github.com/illysito/serenada/blob/85779725b58f8afb23a14762a094aecd4077e410/textures/SerenadaBIG.png'
     )
   )
 
@@ -106,6 +114,8 @@ async function world() {
 
   woodTexture.wrapS = THREE.RepeatWrapping
   woodTexture.wrapT = THREE.RepeatWrapping
+  perlinTexture.wrapS = THREE.RepeatWrapping
+  perlinTexture.wrapT = THREE.RepeatWrapping
   woodTexture.colorSpace = THREE.SRGBColorSpace // if it's a color image
 
   //#endregion
@@ -129,9 +139,15 @@ async function world() {
   console.log('v ', verticalSegments)
   console.log('h ', horizontalSegments)
 
-  const planeGeometry = new THREE.PlaneGeometry(
+  const backgroundPlaneGeometry = new THREE.PlaneGeometry(
     canvas.clientWidth,
     canvas.clientHeight,
+    horizontalSegments,
+    verticalSegments
+  )
+  const planeGeometry = new THREE.PlaneGeometry(
+    heroImgContainer.clientWidth,
+    heroImgContainer.clientHeight,
     horizontalSegments,
     verticalSegments
   )
@@ -167,13 +183,19 @@ async function world() {
       u_scroll: { value: UNIFORMS.u_scroll.value },
       u_scrollDistortion: { value: UNIFORMS.u_scrollDistortion.value },
       u_resolution: {
-        value: new THREE.Vector2(canvas.clientWidth, canvas.clientHeight),
+        value: new THREE.Vector2(
+          heroImgContainer.clientWidth,
+          heroImgContainer.clientHeight
+        ),
       },
     },
     transparent: true,
     depthWrite: false,
   })
-  const backgroundPlane = new THREE.Mesh(planeGeometry, backgroundPlaneMaterial)
+  const backgroundPlane = new THREE.Mesh(
+    backgroundPlaneGeometry,
+    backgroundPlaneMaterial
+  )
   const plane = new THREE.Mesh(planeGeometry, planeMaterial)
   let planeScale = 1
   if (isMobile()) {
@@ -184,6 +206,17 @@ async function world() {
   backgroundPlane.position.z = -0.1
   plane.position.z = 0
   plane.scale.set(planeScale, planeScale, planeScale)
+
+  // position img plane
+  plane.position.x =
+    window.innerWidth / 2 -
+    // 0.02 * window.innerWidth -
+    heroImgContainer.getBoundingClientRect().width / 2 -
+    80
+  plane.position.y =
+    -window.innerHeight / 2 +
+    // 0.02 * window.innerWidth +
+    heroImgContainer.getBoundingClientRect().height / 2
 
   // Avoid the plane from going OVER the SPHERE
   plane.renderOrder = 0
@@ -244,7 +277,7 @@ async function world() {
   const heroSection = document.querySelector('.hero__section')
   function initDistortion(delay) {
     gsap.to(UNIFORMS.u_distFactor, {
-      value: 0.11,
+      value: 0.48,
       duration: 2.4,
       delay: delay,
       ease: 'expo.out',
@@ -253,7 +286,7 @@ async function world() {
       value: 0,
       scrollTrigger: {
         trigger: heroSection,
-        start: 'bottom 100%',
+        start: 'bottom 80%',
         end: 'bottom 32%',
         scrub: 0.5,
         // markers: true,
@@ -263,7 +296,7 @@ async function world() {
       value: 4,
       scrollTrigger: {
         trigger: heroSection,
-        start: 'bottom 100%',
+        start: 'bottom 80%',
         end: 'bottom 20%',
         scrub: 1.2,
         // markers: true,
@@ -289,6 +322,16 @@ async function world() {
       resolution.x = window.innerWidth
       resolution.y = window.innerHeight
     }
+
+    plane.position.x =
+      window.innerWidth / 2 -
+      0.02 * window.innerWidth -
+      heroImgContainer.getBoundingClientRect().width / 2
+    plane.position.y =
+      -window.innerHeight / 2 +
+      0.02 * window.innerWidth +
+      heroImgContainer.getBoundingClientRect().height / 2
+
     camera.aspect = resolution.x / resolution.y
     camera.updateProjectionMatrix()
     renderer.setSize(resolution.x, resolution.y)

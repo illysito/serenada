@@ -104,9 +104,9 @@ function artists() {
     const wrapper = img.parentElement
     wrapper.addEventListener('mouseenter', () => {
       gsap.to(wrapper, {
-        borderRadius: 8,
-        duration: 0.4,
-        ease: 'power2.inOut',
+        borderRadius: 12,
+        duration: 0.6,
+        ease: 'power2.out',
       })
       gsap.to(img, {
         scale: 1.02,
@@ -117,8 +117,8 @@ function artists() {
     wrapper.addEventListener('mouseleave', () => {
       gsap.to(wrapper, {
         borderRadius: 0,
-        duration: 0.4,
-        ease: 'power2.inOut',
+        duration: 0.6,
+        ease: 'power2.out',
       })
       gsap.to(img, {
         scale: 1,

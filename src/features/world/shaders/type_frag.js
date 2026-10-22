@@ -170,21 +170,32 @@ void main()
 
   ///
 
+  float freq = 8.0;
 
-  float noise = texture2D(
+  float n = texture2D(
       u_perlin,
-      uv * vec2(1.0, 2.0) + vec2(0.01 * t, t * 0.02)
+      uv * vec2(freq, 1.4 * freq) + vec2(0.01 * t, t * 0.02)
   ).r;
+
+  float noise = snoise(vec3(
+    uv.x * freq * n,
+    uv.y * freq * n / 16. * 9.,
+    t * 2.5
+  ));
+
+  noise = noise * 0.5 + 0.5;
+
+  // float noise = n;
   
   float swell =
       0.012 * sin(uv.y * 18.0 + t * 0.35) +
-      0.001 * sin(uv.y * 37.0 - t * 0.55);
+      0.008 * cos(uv.y * 37.0 + t * 0.55);
 
   float ripples =
-      0.004 * sin(uv.y * 95.0 + 2. * t * 1.2 + 10. * noise) +
-      0.002 * sin(uv.y * 170.0 - t * 1.7);
+      0.004 * sin(uv.x * 95.0 + 2. * t * 1.2 + 10. * noise) +
+      0.000 * cos(uv.y * 170.0 - t * 1.7);
 
-  float distortion = (swell + ripples) * mix(0.1, 1.2, noise);
+  float distortion = (swell + ripples) * mix(0.1, 1.2, noise) * u_scrollDistortion;
   float initDistortion = u_distFactor * distortion;
 
 
@@ -192,14 +203,14 @@ void main()
 
 
   vec2 distortionUV = vec2(uv.x, 0.996 * uv.y) + vec2(
-      1.2 * distortion * u_scrollDistortion - initDistortion,
+      1.8 * distortion + u_scrollDistortion - initDistortion,
       0.001 * sign(sin(uv.x * 25.0 + t * 0.4)) *
-      pow(abs(sin(uv.x * 25.0 + t * 0.8)), 4.0) - distortion - initDistortion
+      pow(abs(sin(uv.y * 25.0 + t * 0.8)), 4.0) - distortion - initDistortion
   );
 
   vec2 initDistortionUV = vec2(uv.x, 0.996 * uv.y) + vec2(
-    1.2 * initDistortion * u_scrollDistortion,
-    0.001 * sin(uv.x * 25.0 + t * 0.4) * u_scrollDistortion - initDistortion
+    0.2 * distortion * initDistortion * u_scrollDistortion,
+    0.001 * distortion * sin(uv.x * 25.0 + t * 0.4) * u_scrollDistortion - initDistortion
   );
 
 
@@ -207,7 +218,8 @@ void main()
 
 
   vec4 mainTexture = texture2D(u_wood, initDistortionUV);
-  vec4 reflectionTexture = texture2D(u_reflection, distortionUV);
+  // vec4 reflectionTexture = texture2D(u_reflection, distortionUV);
+  vec4 reflectionTexture = vec4(0.0,0.0,0.0,0.0);
 
   float reflectionAlpha = reflectionTexture.a * 0.4 * noise;
 
@@ -218,9 +230,12 @@ void main()
       reflectionTexture.rgb * reflectionAlpha
       + mainTexture.rgb * mainTexture.a * (1.0 - reflectionAlpha)
   ) / max(finalAlpha, 0.00001);
-  
 
-  gl_FragColor = vec4(finalRGB, finalAlpha);
+  finalRGB = mainTexture.rgb;
+
+  // finalAlpha = 0.0;
+  
+  gl_FragColor = vec4(finalRGB, finalAlpha) + 0. * random * u_scroll;
 }
 `
 export default typeFragment

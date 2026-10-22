@@ -64,14 +64,21 @@ void main()
   float random = hash12(0.5 * gl_FragCoord.xy + u_time);
   float t = u_time;
 
-
   ///
 
 
   vec4 background = texture2D(u_bg, uv);
   // background = vec4(1.0, 0.0, 0.0, 1.0);
 
-  gl_FragColor = background + 0.12 * random;
+  vec3 color = vec3(1.0, 0.9882, 0.9373);
+
+  background.r = color.r + 0.1;
+  background.g = color.g + 0.22;
+  background.b = color.b - 0.3;
+ 
+  background.rgb *= 0.42;
+
+  gl_FragColor = background + 0.092 * random;
 }
 `
 export default typeFragment
