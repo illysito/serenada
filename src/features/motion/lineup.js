@@ -73,6 +73,8 @@ function lineup() {
   const duration = 0.8
   dayShowWrappers.forEach((w) => {
     const texts = w.querySelectorAll('h4')
+    const button = w.querySelector('.button')
+    const buttonText = w.querySelector('.is--button')
     const overlay = w.lastElementChild
     w.addEventListener('mouseenter', () => {
       gsap.to(overlay, {
@@ -85,6 +87,16 @@ function lineup() {
         duration: duration,
         ease: 'power2.out',
       })
+      gsap.to(button, {
+        backgroundColor: '#548945',
+        duration: duration,
+        ease: 'power2.out',
+      })
+      gsap.to(buttonText, {
+        color: '#f4ff64',
+        duration: duration,
+        ease: 'power2.out',
+      })
     })
     w.addEventListener('mouseleave', () => {
       gsap.to(overlay, {
@@ -94,6 +106,16 @@ function lineup() {
       })
       gsap.to(texts, {
         color: '#f4ff64',
+        duration: duration,
+        ease: 'power2.out',
+      })
+      gsap.to(button, {
+        backgroundColor: '#f4ff64',
+        duration: duration,
+        ease: 'power2.out',
+      })
+      gsap.to(buttonText, {
+        color: '#548945',
         duration: duration,
         ease: 'power2.out',
       })

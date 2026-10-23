@@ -7,6 +7,7 @@ gsap.registerPlugin(ScrollTrigger)
 function info() {
   const infoTitles = [...document.querySelectorAll('.info-title')]
   const infoDescs = [...document.querySelectorAll('.info-desc')]
+  const mapWrapper = document.querySelector('.map-container')
 
   // wrap in overflow hidden
   infoTitles.forEach((el) => {
@@ -41,6 +42,10 @@ function info() {
     opacity: 0,
     yPercent: 100,
   })
+  gsap.set(mapWrapper, {
+    opacity: 0,
+    // yPercent: 100,
+  })
 
   // move things on scroll
   infoTitles.forEach((t) => {
@@ -73,6 +78,19 @@ function info() {
         once: true,
       },
     })
+  })
+
+  gsap.to(mapWrapper, {
+    opacity: 1,
+    // duration: 1.6,
+    // ease: 'power3.out',
+    scrollTrigger: {
+      trigger: mapWrapper,
+      start: 'top 80%',
+      end: 'top 12%',
+      once: true,
+      scrub: true,
+    },
   })
 }
 

@@ -13,7 +13,7 @@ import vert from '../shaders/vertexShader'
 const UNIFORMS = {
   u_distFactor: { value: 2 },
   u_scroll: { value: 1 },
-  u_scrollDistortion: { value: 0 },
+  u_scrollDistortion: { value: 10 },
 }
 
 function isMobile() {
@@ -212,11 +212,8 @@ async function world() {
     window.innerWidth / 2 -
     // 0.02 * window.innerWidth -
     heroImgContainer.getBoundingClientRect().width / 2 -
-    80
-  plane.position.y =
-    -window.innerHeight / 2 +
-    // 0.02 * window.innerWidth +
-    heroImgContainer.getBoundingClientRect().height / 2
+    60
+  plane.position.y = -20
 
   // Avoid the plane from going OVER the SPHERE
   plane.renderOrder = 0
@@ -260,6 +257,7 @@ async function world() {
     planeMaterial.uniforms.u_scroll.value = UNIFORMS.u_scroll.value
     planeMaterial.uniforms.u_scrollDistortion.value =
       UNIFORMS.u_scrollDistortion.value
+    // console.log('scroll', planeMaterial.uniforms.u_scrollDistortion.value)
     // planeMaterial.uniforms.u_mouseX.value = currentX
     // planeMaterial.uniforms.u_mouseY.value = currentY
     // mouse.style.transform = `translate(${currentX - 12}px, ${currentY - 12}px)`
@@ -278,7 +276,7 @@ async function world() {
   function initDistortion(delay) {
     gsap.to(UNIFORMS.u_distFactor, {
       value: 0.48,
-      duration: 2.4,
+      duration: 1.4,
       delay: delay,
       ease: 'expo.out',
     })
@@ -292,14 +290,38 @@ async function world() {
         // markers: true,
       },
     })
+    gsap.to(plane.position, {
+      y: 0,
+      duration: 1.4,
+      delay: delay * 1,
+      ease: 'power2.inOut',
+    })
     gsap.to(UNIFORMS.u_scrollDistortion, {
-      value: 4,
-      scrollTrigger: {
-        trigger: heroSection,
-        start: 'bottom 80%',
-        end: 'bottom 20%',
-        scrub: 1.2,
-        // markers: true,
+      value: 0,
+      duration: 2,
+      delay: delay,
+      ease: 'expo.out',
+      onComplete: () => {
+        gsap.to(UNIFORMS.u_scrollDistortion, {
+          value: 4,
+          scrollTrigger: {
+            trigger: heroSection,
+            start: 'bottom 80%',
+            end: 'bottom 20%',
+            scrub: 1.2,
+            // markers: true,
+          },
+        })
+        gsap.to(plane.position, {
+          y: -18,
+          scrollTrigger: {
+            trigger: heroSection,
+            start: 'bottom 90%',
+            end: 'bottom 20%',
+            scrub: 1.2,
+            // markers: true,
+          },
+        })
       },
     })
   }
@@ -327,10 +349,7 @@ async function world() {
       window.innerWidth / 2 -
       0.02 * window.innerWidth -
       heroImgContainer.getBoundingClientRect().width / 2
-    plane.position.y =
-      -window.innerHeight / 2 +
-      0.02 * window.innerWidth +
-      heroImgContainer.getBoundingClientRect().height / 2
+    plane.position.y = 0
 
     camera.aspect = resolution.x / resolution.y
     camera.updateProjectionMatrix()

@@ -1,4 +1,5 @@
 import artists from './features/motion/artists'
+import manifest from './features/motion/claim'
 import hero from './features/motion/hero'
 import info from './features/motion/info'
 import lineup from './features/motion/lineup'
@@ -12,6 +13,7 @@ console.log('Serenada 26')
 world()
 nav()
 hero()
+manifest()
 tags()
 lineup()
 artists()

@@ -55,7 +55,7 @@ function preloader() {
     } else {
       gsap.to(preloaderSection, {
         yPercent: -100,
-        duration: 1.8,
+        duration: 1.6,
         ease: 'expo.inOut',
       })
       gsap.to([header, numbers], {
