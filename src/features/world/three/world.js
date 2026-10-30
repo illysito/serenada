@@ -123,33 +123,33 @@ async function world() {
 
   // -------------------------------------------------------------- Background Plane --------------------------------------------------------------
 
-  const segments = isMobile() ? 60 : 200
+  // const segments = isMobile() ? 60 : 200
 
-  const verticalSegments = segments
-  let horizontalSegments = 0
+  // const verticalSegments = segments
+  // let horizontalSegments = 0
 
-  if (isMobile()) {
-    horizontalSegments = Math.round(
-      (verticalSegments * window.innerWidth) / window.innerHeight
-    )
-  } else {
-    horizontalSegments = 140
-  }
+  // if (isMobile()) {
+  //   horizontalSegments = Math.round(
+  //     (verticalSegments * window.innerWidth) / window.innerHeight
+  //   )
+  // } else {
+  //   horizontalSegments = 140
+  // }
 
-  console.log('v ', verticalSegments)
-  console.log('h ', horizontalSegments)
+  // console.log('v ', verticalSegments)
+  // console.log('h ', horizontalSegments)
 
   const backgroundPlaneGeometry = new THREE.PlaneGeometry(
     canvas.clientWidth,
     canvas.clientHeight,
-    horizontalSegments,
-    verticalSegments
+    1,
+    1
   )
   const planeGeometry = new THREE.PlaneGeometry(
     heroImgContainer.clientWidth,
     heroImgContainer.clientHeight,
-    horizontalSegments,
-    verticalSegments
+    1,
+    1
   )
   const seed = Math.random() * 20
   // console.log('Seed: ', seed)
