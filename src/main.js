@@ -8,6 +8,8 @@ import preloader from './features/motion/preloader'
 import tags from './features/motion/tags'
 import world from './features/world/three/world'
 
+import './styles/style.css'
+
 console.log('Serenada 26')
 
 world()

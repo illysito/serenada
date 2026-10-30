@@ -199,7 +199,7 @@ async function world() {
   const plane = new THREE.Mesh(planeGeometry, planeMaterial)
   let planeScale = 1
   if (isMobile()) {
-    planeScale = 1.8
+    planeScale = 1
   }
   // plane.rotation.x = 0.1
   // plane.rotation.z = Math.PI / 2
@@ -212,7 +212,7 @@ async function world() {
     window.innerWidth / 2 -
     // 0.02 * window.innerWidth -
     heroImgContainer.getBoundingClientRect().width / 2 -
-    60
+    0
   plane.position.y = -20
 
   // Avoid the plane from going OVER the SPHERE
