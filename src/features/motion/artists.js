@@ -4,6 +4,10 @@ import SplitType from 'split-type'
 
 gsap.registerPlugin(ScrollTrigger)
 
+function isMobile() {
+  return window.matchMedia('(max-width: 667px)').matches
+}
+
 function artists() {
   const artistImages = [...document.querySelectorAll('.artist-img')]
   const artistNames = [...document.querySelectorAll('.artist-name')]
@@ -137,8 +141,12 @@ function artists() {
         // scrub: true,
       },
     })
+    let parallaxOffset = 32
+    if (isMobile()) {
+      parallaxOffset = 12
+    }
     gsap.to(img, {
-      y: -32,
+      y: -parallaxOffset,
       scrollTrigger: {
         trigger: img,
         start: 'top 100%',
