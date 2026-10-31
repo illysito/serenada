@@ -8,22 +8,20 @@ function menu() {
   // const linkWrappers = [...document.querySelectorAll('.menu-link')]
   const links = [...document.querySelectorAll('.menu-p')]
 
-  let isMenuDisplayed = false
-
   gsap.set(links, {
     yPercent: -100,
   })
 
-  function manageMenu() {
+  function manageMenu(needToOpen) {
     // OPEN MENU
-    if (!isMenuDisplayed) {
+    if (needToOpen) {
       gsap.to(menuSection, {
         x: 0,
         duration: 1.2,
         ease: 'expo.inOut',
       })
       gsap.to(closeButton, {
-        oapcity: 1,
+        opacity: 1,
         duration: 1.2,
         ease: 'power2.inOut',
       })
@@ -56,10 +54,12 @@ function menu() {
   }
 
   button.addEventListener('click', () => {
-    manageMenu()
+    const needsToOpen = true
+    manageMenu(needsToOpen)
   })
   closeButton.addEventListener('click', () => {
-    manageMenu()
+    const needsToOpen = false
+    manageMenu(needsToOpen)
   })
 }
 
