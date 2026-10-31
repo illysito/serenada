@@ -11,6 +11,11 @@ function menu() {
   gsap.set(links, {
     yPercent: -100,
   })
+  gsap.set(menuSection, {
+    xPercent: -100,
+    zIndex: 999,
+    opacity: 1,
+  })
 
   function manageMenu(needsToOpen) {
     // OPEN MENU
