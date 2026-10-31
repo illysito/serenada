@@ -5,14 +5,14 @@ function menu() {
   const button = document.querySelector('.burger-wrapper')
   const closeButton = document.querySelector('.close-button-wrapper')
   // const lines = [...button.querySelectorAll('.burger-line')]
-  // const linkWrappers = [...document.querySelectorAll('.menu-link')]
+  const linkWrappers = [...document.querySelectorAll('.menu-link')]
   const links = [...document.querySelectorAll('.menu-p')]
 
   gsap.set(links, {
     yPercent: -100,
   })
   gsap.set(menuSection, {
-    xPercent: -100,
+    xPercent: 100,
     zIndex: 999,
     opacity: 1,
   })
@@ -64,6 +64,13 @@ function menu() {
   closeButton.addEventListener('click', () => {
     const needsToOpen = false
     manageMenu(needsToOpen)
+  })
+
+  linkWrappers.forEach((w) => {
+    w.addEventListener('click', () => {
+      const needsToOpen = false
+      manageMenu(needsToOpen)
+    })
   })
 }
 
