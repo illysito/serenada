@@ -9,6 +9,10 @@ function menu() {
 
   let isMenuDisplayed = false
 
+  gsap.set(links, {
+    yPercent: 100,
+  })
+
   function manageMenu() {
     // OPEN MENU
     if (!isMenuDisplayed) {
@@ -18,6 +22,7 @@ function menu() {
         ease: 'expo.inOut',
       })
       gsap.to(links, {
+        opacity: 1,
         yPercent: 0,
         duration: 1.2,
         ease: 'expo.inOut',
@@ -25,10 +30,10 @@ function menu() {
     } else {
       // CLOSE MENU
     }
+    isMenuDisplayed = !isMenuDisplayed
   }
 
   button.addEventListener('click', () => {
-    isMenuDisplayed = !isMenuDisplayed
     manageMenu()
   })
 }
