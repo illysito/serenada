@@ -12,9 +12,9 @@ function menu() {
     yPercent: -100,
   })
 
-  function manageMenu(needToOpen) {
+  function manageMenu(needsToOpen) {
     // OPEN MENU
-    if (needToOpen) {
+    if (needsToOpen) {
       gsap.to(menuSection, {
         x: 0,
         duration: 1.2,
@@ -50,7 +50,6 @@ function menu() {
       })
       // CLOSE MENU
     }
-    isMenuDisplayed = !isMenuDisplayed
   }
 
   button.addEventListener('click', () => {
