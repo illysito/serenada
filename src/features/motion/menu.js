@@ -18,7 +18,7 @@ function menu() {
         ease: 'expo.inOut',
       })
       gsap.to(links, {
-        yPercent: 100,
+        yPercent: 0,
         duration: 1.2,
         ease: 'expo.inOut',
       })
