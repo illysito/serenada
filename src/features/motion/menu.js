@@ -16,7 +16,7 @@ function menu() {
     // OPEN MENU
     if (needsToOpen) {
       gsap.to(menuSection, {
-        x: 0,
+        xPercent: 0,
         duration: 1.2,
         ease: 'expo.inOut',
       })
