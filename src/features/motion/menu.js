@@ -39,7 +39,7 @@ function menu() {
         ease: 'power2.inOut',
       })
       gsap.to(closeButton, {
-        oapcity: 0,
+        opacity: 0,
         duration: 1.2,
         ease: 'power2.inOut',
       })
