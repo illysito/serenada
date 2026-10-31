@@ -58,6 +58,9 @@ function menu() {
   button.addEventListener('click', () => {
     manageMenu()
   })
+  closeButton.addEventListener('click', () => {
+    manageMenu()
+  })
 }
 
 export default menu
