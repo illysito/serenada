@@ -3,8 +3,8 @@ import gsap from 'gsap'
 function menu() {
   const menuSection = document.querySelector('.menu__section')
   const button = document.querySelector('.burger-wrapper')
-  const lines = [...button.querySelectorAll('.burger-line')]
-  const linkWrappers = [...document.querySelectorAll('.menu-link')]
+  // const lines = [...button.querySelectorAll('.burger-line')]
+  // const linkWrappers = [...document.querySelectorAll('.menu-link')]
   const links = [...document.querySelectorAll('.menu-p')]
 
   let isMenuDisplayed = false
