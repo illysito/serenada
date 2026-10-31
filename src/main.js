@@ -12,9 +12,15 @@ import './styles/style.css'
 
 console.log('Serenada 26')
 
+function isMobile() {
+  return window.matchMedia('(max-width: 667px)').matches
+}
+
 world()
 nav()
-hero()
+if (!isMobile()) {
+  hero()
+}
 manifest()
 tags()
 lineup()

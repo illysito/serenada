@@ -221,9 +221,9 @@ async function world() {
   plane.material.depthTest = true
 
   scene.add(backgroundPlane)
-  if (!isMobile()) {
-    scene.add(plane)
-  }
+  // if (!isMobile()) {
+  scene.add(plane)
+  // }
 
   //#endregion
 
