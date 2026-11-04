@@ -125,9 +125,9 @@ async function world() {
     githubToJsDelivr(
       'https://github.com/illysito/MIRA/blob/b8b3f77324995d6aed0c0799f8bb6d1d3dae8072/textures/hero_imgs/Patricia.webp'
     ),
-    githubToJsDelivr(
-      'https://github.com/illysito/MIRA/blob/b8b3f77324995d6aed0c0799f8bb6d1d3dae8072/textures/hero_imgs/DellaDu.webp'
-    ),
+    // githubToJsDelivr(
+    //   'https://github.com/illysito/MIRA/blob/b8b3f77324995d6aed0c0799f8bb6d1d3dae8072/textures/hero_imgs/DellaDu.webp'
+    // ),
     githubToJsDelivr(
       'https://github.com/illysito/MIRA/blob/b8b3f77324995d6aed0c0799f8bb6d1d3dae8072/textures/hero_imgs/Rina.webp'
     ),
@@ -291,7 +291,7 @@ async function world() {
 
   let textureIndex = 0
   let lastTextureChange = performance.now()
-  const textureInterval = 2000
+  const textureInterval = 1200
 
   let lerpFactor = 0.06
 
@@ -322,7 +322,7 @@ async function world() {
     const now = performance.now()
 
     if (now - lastTextureChange >= textureInterval) {
-      textureIndex = (textureIndex + 1) % 16
+      textureIndex = (textureIndex + 1) % 15
       lastTextureChange = now
 
       planeMaterial.uniforms.u_wood.value = changingTextures[textureIndex]
