@@ -91,17 +91,6 @@ async function world() {
     )
   )
 
-  // const woodTexture = textureLoader.load(
-  //   githubToJsDelivr(
-  //     'https://github.com/illysito/serenada/blob/b747d2ff12f90d6583b1f547cfdbcb583dd538d4/textures/ElsaMorenoGLSL.png'
-  //   )
-  // )
-
-  // const reflectionTexture = textureLoader.load(
-  //   githubToJsDelivr(
-  //     'https://github.com/illysito/serenada/blob/9731d7b2b3e2a32f7d19c3c233565d83e669040b/textures/Serenada%20Reflection%20-%20little.png'
-  //   )
-  // )
   const reflectionTexture = textureLoader.load(
     githubToJsDelivr(
       'https://github.com/illysito/serenada/blob/85779725b58f8afb23a14762a094aecd4077e410/textures/SerenadaBIG.png'
@@ -110,6 +99,64 @@ async function world() {
 
   const perlinTexture = textureLoader.load(
     'https://cdn.jsdelivr.net/gh/illysito/amorenelaire@0714d117d78e43ca5310ea45c9e93b48ece7e576/textures/perlinSquare.jpg'
+  )
+
+  const changingTextureURLs = [
+    // 1
+    githubToJsDelivr(
+      'https://github.com/illysito/MIRA/blob/b8b3f77324995d6aed0c0799f8bb6d1d3dae8072/textures/hero_imgs/Cangreja.webp'
+    ),
+    githubToJsDelivr(
+      'https://github.com/illysito/MIRA/blob/b8b3f77324995d6aed0c0799f8bb6d1d3dae8072/textures/hero_imgs/Claudia.webp'
+    ),
+    githubToJsDelivr(
+      'https://github.com/illysito/MIRA/blob/b8b3f77324995d6aed0c0799f8bb6d1d3dae8072/textures/hero_imgs/Dario.webp'
+    ),
+    githubToJsDelivr(
+      'https://github.com/illysito/MIRA/blob/b8b3f77324995d6aed0c0799f8bb6d1d3dae8072/textures/hero_imgs/Elsa.webp'
+    ),
+    githubToJsDelivr(
+      'https://github.com/illysito/MIRA/blob/b8b3f77324995d6aed0c0799f8bb6d1d3dae8072/textures/hero_imgs/Miriam.webp'
+    ),
+    // 6
+    githubToJsDelivr(
+      'https://github.com/illysito/MIRA/blob/b8b3f77324995d6aed0c0799f8bb6d1d3dae8072/textures/hero_imgs/Odeluwa.webp'
+    ),
+    githubToJsDelivr(
+      'https://github.com/illysito/MIRA/blob/b8b3f77324995d6aed0c0799f8bb6d1d3dae8072/textures/hero_imgs/Patricia.webp'
+    ),
+    githubToJsDelivr(
+      'https://github.com/illysito/MIRA/blob/b8b3f77324995d6aed0c0799f8bb6d1d3dae8072/textures/hero_imgs/DellaDu.webp'
+    ),
+    githubToJsDelivr(
+      'https://github.com/illysito/MIRA/blob/b8b3f77324995d6aed0c0799f8bb6d1d3dae8072/textures/hero_imgs/Rina.webp'
+    ),
+    githubToJsDelivr(
+      'https://github.com/illysito/MIRA/blob/b8b3f77324995d6aed0c0799f8bb6d1d3dae8072/textures/hero_imgs/Salome%CC%81.webp'
+    ),
+    // 11
+    githubToJsDelivr(
+      'https://github.com/illysito/MIRA/blob/b8b3f77324995d6aed0c0799f8bb6d1d3dae8072/textures/hero_imgs/Sandra.webp'
+    ),
+    githubToJsDelivr(
+      'https://github.com/illysito/MIRA/blob/b8b3f77324995d6aed0c0799f8bb6d1d3dae8072/textures/hero_imgs/Sheila.webp'
+    ),
+    githubToJsDelivr(
+      'https://github.com/illysito/MIRA/blob/b8b3f77324995d6aed0c0799f8bb6d1d3dae8072/textures/hero_imgs/Silvia.webp'
+    ),
+    githubToJsDelivr(
+      'https://github.com/illysito/MIRA/blob/b8b3f77324995d6aed0c0799f8bb6d1d3dae8072/textures/hero_imgs/Teresa.webp'
+    ),
+    githubToJsDelivr(
+      'https://github.com/illysito/MIRA/blob/b8b3f77324995d6aed0c0799f8bb6d1d3dae8072/textures/hero_imgs/Xavi.webp'
+    ),
+    githubToJsDelivr(
+      'https://github.com/illysito/serenada/blob/b8906e0509b5649516cc3655561aa8b940f21566/textures/DePedroGLSL-3.png'
+    ),
+  ]
+
+  const changingTextures = await Promise.all(
+    changingTextureURLs.map((url) => textureLoader.loadAsync(url))
   )
 
   woodTexture.wrapS = THREE.RepeatWrapping
@@ -242,6 +289,10 @@ async function world() {
   let currentX = 0
   let currentY = 0
 
+  let textureIndex = 0
+  let lastTextureChange = performance.now()
+  const textureInterval = 2000
+
   let lerpFactor = 0.06
 
   function lerp(start, end, t) {
@@ -267,6 +318,15 @@ async function world() {
     // if (!isMobile()) {
     //   plane.rotation.z = Math.PI * Math.cos(0.25 * planeCounter)
     // }
+
+    const now = performance.now()
+
+    if (now - lastTextureChange >= textureInterval) {
+      textureIndex = (textureIndex + 1) % 16
+      lastTextureChange = now
+
+      planeMaterial.uniforms.u_wood.value = changingTextures[textureIndex]
+    }
 
     // Render and RAF
     renderer.render(scene, camera)
